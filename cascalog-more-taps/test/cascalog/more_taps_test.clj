@@ -116,3 +116,13 @@
                  ((hfs-wholefile tmp) ?name ?data)) =>
                  (produces [[file-name-0 binary-blob-0]
                             [file-name-1 binary-blob-1]]))))))
+
+(deftest delimited-empty-last-test
+  (fact
+    (io/with-fs-tmp [_ tmp]
+      (?- (hfs-textline tmp)   ;; write line
+          [["Proin\thendrerit\t"]])
+      (fact "Test hfs-delimited where last element is empty"
+        (<- [?a ?b !c]
+            ((hfs-delimited tmp :delimiter "\t") ?a ?b !c)) =>
+        (produces [["Proin" "hendrerit" nil]])))))
